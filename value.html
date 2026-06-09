@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影石Insta360UX设计实习申请</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --amber-50: #FAEEDA;
+    --amber-100: #FAC775;
+    --amber-200: #EF9F27;
+    --amber-400: #BA7517;
+    --amber-600: #854F0B;
+    --amber-800: #633806;
+    --bg-primary: #0e0e0f;
+    --bg-secondary: #171718;
+    --bg-card: #1e1e20;
+    --bg-card2: #252527;
+    --text-primary: #f5f5f5;
+    --text-secondary: #e6e6e6;
+    --text-muted: #c8c8c8;
+    --border: rgba(255,255,255,0.08);
+    --border-amber: rgba(239,159,39,0.3);
+    --radius-md: 8px;
+    --radius-lg: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg-primary); color: var(--text-primary); font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif; font-size: 16px; line-height: 1.75; }
+
+  .hero { padding: 64px 48px 40px; border-bottom: 0.5px solid var(--border); }
+  .hero-eyebrow { font-size: 12px; letter-spacing: 0.12em; color: var(--amber-200); text-transform: uppercase; margin-bottom: 16px; }
+  .hero h1 { font-size: 32px; font-weight: 500; color: var(--text-primary); line-height: 1.3; margin-bottom: 12px; }
+  .hero h1 span { color: var(--amber-200); }
+  .hero-sub { color: var(--text-secondary); font-size: 15px; max-width: 560px; }
+
+  nav { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); overflow-x: auto; padding: 0 48px; }
+  nav a { display: block; padding: 14px 0; margin-right: 32px; font-size: 13px; color: var(--text-muted); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; cursor: pointer; transition: color 0.2s; }
+  nav a.active, nav a:hover { color: var(--amber-200); border-bottom-color: var(--amber-200); }
+
+  .section { display: none; padding: 48px; }
+  .section.active { display: block; }
+
+  .section-title { font-size: 20px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+  .section-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 32px; }
+
+  .card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+  .card-amber { border-color: var(--border-amber); }
+  .card-icon { font-size: 20px; color: var(--amber-200); margin-bottom: 12px; }
+  .card-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .card-title { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+  .card-body { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
+
+  .stat-card { background: var(--bg-card); border-radius: var(--radius-md); padding: 16px; }
+  .stat-num { font-size: 28px; font-weight: 500; color: var(--amber-200); }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  .timeline { position: relative; padding-left: 24px; border-left: 1.5px solid var(--border-amber); margin-bottom: 32px; }
+  .tl-item { margin-bottom: 28px; position: relative; }
+  .tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber-200); position: absolute; left: -28px; top: 7px; }
+  .tl-phase { font-size: 11px; color: var(--amber-400); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .tl-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .tl-body { font-size: 13px; color: var(--text-secondary); }
+  .tl-missing { font-size: 12px; color: #E24B4A; background: rgba(226,75,74,0.1); border-radius: 4px; padding: 2px 8px; display: inline-block; margin-top: 4px; }
+  .tl-added { font-size: 12px; color: var(--amber-200); background: rgba(239,159,39,0.1); border-radius: 4px; padding: 2px 8px; display: inline-block; margin-top: 4px; }
+
+  .sop-row { display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-md); margin-bottom: 10px; }
+  .sop-time { min-width: 72px; font-size: 11px; font-weight: 500; color: var(--amber-200); padding-top: 2px; }
+  .sop-content { flex: 1; }
+  .sop-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .sop-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .sop-output { font-size: 11px; color: var(--amber-400); margin-top: 4px; }
+
+  .badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin: 3px 3px 3px 0; }
+  .badge-amber { background: rgba(239,159,39,0.12); color: var(--amber-200); border: 0.5px solid rgba(239,159,39,0.25); }
+  .badge-gray { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 0.5px solid var(--border); }
+  .badge-red { background: rgba(226,75,74,0.1); color: #E24B4A; border: 0.5px solid rgba(226,75,74,0.2); }
+
+  .divider { height: 0.5px; background: var(--border); margin: 32px 0; }
+
+  .chart-wrap { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+  .chart-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 16px; }
+
+  .highlight-box { background: linear-gradient(135deg, rgba(239,159,39,0.06), rgba(239,159,39,0.02)); border: 0.5px solid var(--border-amber); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 24px; }
+  .highlight-box h3 { font-size: 14px; font-weight: 500; color: var(--amber-200); margin-bottom: 8px; }
+  .highlight-box p { font-size: 13px; color: var(--text-secondary); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  @media (max-width: 600px) { 
+    .hero, .section, nav { padding-left: 20px; padding-right: 20px; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  .arrow-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+  .arrow-box { background: var(--bg-card2); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 8px 14px; font-size: 12px; color: var(--text-secondary); }
+  .arrow-box.highlight { border-color: var(--border-amber); color: var(--amber-200); }
+  .arrow-sep { color: var(--amber-400); font-size: 16px; }
+
+  .value-list { list-style: none; }
+  .value-list li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--text-secondary); }
+  .value-list li:last-child { border-bottom: none; }
+  .value-list .vi { color: var(--amber-200); margin-top: 2px; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">影石 Insta360 · 用户体验设计实习生申请 · 相机固件方向</div>
+  <h1>我能为 <span>Insta360</span> 带来什么</h1>
+  <p class="hero-sub">这是一份针对面试反馈的补充说明，以及我对这个岗位的系统性思考，希望我能加入团队带来更多价值。</p>
+</div>
+
+<nav>
+  <a class="active" onclick="showTab('thinking')">岗位思考</a>
+  <a onclick="showTab('sop')">我的工作方式</a>
+  <a onclick="showTab('project')">项目复盘</a>
+  <a onclick="showTab('value')">我能贡献什么</a>
+</nav>
+
+<!-- TAB 1: 岗位思考 -->
+<div id="thinking" class="section active">
+  <div class="section-title">对这个岗位的思考</div>
+  <div class="section-sub">固件方向 UX 实习生 · 我的理解与定位</div>
+
+  <div class="highlight-box">
+    <h3><i class="ti ti-bulb" aria-hidden="true"></i> 这个岗位在解决什么问题？</h3>
+    <p>相机固件直接影响用户拿起设备后的每一个交互决策——拍摄模式、参数反馈、错误提示、多设备协同。用户不会阅读手册，他们通过界面直觉判断"能不能拍"和"拍出来好不好"。固件 UX 的核心挑战：在极小的屏幕与极复杂的参数之间，找到让普通用户也能"无脑出片"的信息架构。</p>
+  </div>
+
+  <div class="grid3">
+    <div class="stat-card">
+      <div class="stat-num">3</div>
+      <div class="stat-label">核心用户场景<br>运动 · 旅行 · 创作者</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">360°</div>
+      <div class="stat-label">全景拍摄带来的<br>独特认知门槛</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">软硬件结合</div>
+      <div class="stat-label">固件体验联结<br>硬件感知与软件呈现</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">固件 UX 痛点分布（基于公开社区反馈整理）</div>
+    <div style="position:relative;height:260px;">
+      <canvas id="painChart" role="img" aria-label="固件体验痛点分布雷达图">覆盖：参数设置复杂度、错误提示不明确、多设备同步问题、固件升级体验、电量/存储反馈等维度。</canvas>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11px;color:var(--text-muted);">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#EF9F27;margin-right:4px;"></span>用户感知频率</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(239,159,39,0.25);margin-right:4px;border:1px dashed #EF9F27;"></span>我可介入深度</span>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:16px;margin-bottom:16px;">我对这个岗位能力模型的理解</div>
+  <div class="grid2">
+    <div class="card card-amber">
+      <div class="card-icon"><i class="ti ti-microscope" aria-hidden="true"></i></div>
+      <div class="card-title">用户洞察能力</div>
+      <div class="card-body">深度访谈 · 社区分析 · 行为数据解读。需要快速识别"用户说的"和"用户真实遇到的"之间的差距。我在上一段实习中积累了对接甲方、现场测试、收集真实用户反应的经验。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="ti ti-vector-triangle" aria-hidden="true"></i></div>
+      <div class="card-title">交互原型能力</div>
+      <div class="card-body">ProtoPie · Figma。我有完整动效原型交付经验，理解固件操作逻辑（短按/长按/滑动手势）如何映射到真实硬件按键，曾独立完成车机全流程动态原型。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="ti ti-git-merge" aria-hidden="true"></i></div>
+      <div class="card-title">跨部门协作能力</div>
+      <div class="card-body">固件设计需要与硬件工程师、软件开发、产品经理高频对齐。我在汽车项目中有对接多方供应商、同步进度、整理反馈的实际经历，适应快节奏项目流。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="ti ti-device-camera" aria-hidden="true"></i></div>
+      <div class="card-title">产品感知能力</div>
+      <div class="card-body">关注影石产品线及竞品（GoPro、大疆 Action）的固件更新动态，理解全景相机独特的信息层次：防抖参数、拼接提示、FlowState 反馈逻辑。</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: 工作方式 SOP -->
+<div id="sop" class="section">
+  <div class="section-title">我的工作方式</div>
+  <div class="section-sub">如果入职，我会如何系统性地推进实习工作</div>
+
+  <div class="highlight-box">
+    <h3><i class="ti ti-list-check" aria-hidden="true"></i> 实习 SOP 框架</h3>
+    <p>我给自己制定了一套实习工作习惯：每半天主动同步进度，避免方向偏差；每周撰写周报归因问题并附带解决方案；用 SOP 文档沉淀可复用的流程。这不是形式主义，是我在上一段实习里踩坑总结出的节奏。</p>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:16px;">典型工作日节奏（实习期）</div>
+
+  <div class="sop-row">
+    <div class="sop-time">09:30</div>
+    <div class="sop-content">
+      <div class="sop-title"><i class="ti ti-checklist" aria-hidden="true" style="color:var(--amber-200);margin-right:6px;"></i>任务对齐 · 当日目标锁定</div>
+      <div class="sop-desc">与导师同步今日产出物，明确验收标准，避免"做完才发现方向不对"</div>
+      <div class="sop-output">→ 输出：Notion 当日任务卡（含优先级 + 完成标准）</div>
+    </div>
+  </div>
+  <div class="sop-row">
+    <div class="sop-time">13:00</div>
+    <div class="sop-content">
+      <div class="sop-title"><i class="ti ti-send" aria-hidden="true" style="color:var(--amber-200);margin-right:6px;"></i>午间主动汇报 · 半日进度同步</div>
+      <div class="sop-desc">简短说明上午完成情况与下午计划，有卡点及时暴露，不等到夕会才说</div>
+      <div class="sop-output">→ 输出：3句话进度汇报（完成了什么 · 遇到什么问题 · 下午怎么做）</div>
+    </div>
+  </div>
+  <div class="sop-row">
+    <div class="sop-time">18:30</div>
+    <div class="sop-content">
+      <div class="sop-title"><i class="ti ti-files" aria-hidden="true" style="color:var(--amber-200);margin-right:6px;"></i>收尾归档 · 当日复盘记录</div>
+      <div class="sop-desc">将当天研究发现、用户洞察、方案迭代记录到设计文档，建立可追溯的决策链</div>
+      <div class="sop-output">→ 输出：设计日志条目（问题 → 分析 → 决策依据）</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:6px;">真实记录：我的实习日志</div>
+  <div class="section-sub" style="margin-bottom:16px;">以下是我在上一段实习（ETU 交互设计）中实际撰写的飞书日志节选，记录了项目1启动阶段的工作内容</div>
+
+  <div style="background:var(--bg-card);border:0.5px solid var(--border-amber);border-radius:var(--radius-lg);padding:24px;margin-bottom:24px;font-size:14px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:0.5px solid var(--border);">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--amber-200);"></div>
+      <span style="font-weight:500;color:var(--text-primary);font-size:16px;">11.26</span>
+      <span style="font-size:12px;color:var(--text-muted);margin-left:4px;">ETU 交互设计实习日志</span>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;color:var(--amber-200);margin-bottom:8px;letter-spacing:0.06em;">上午</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);"><i class="ti ti-square-check" style="color:var(--amber-200);font-size:15px;" aria-hidden="true"></i>交各类材料</div>
+        <div style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);"><i class="ti ti-square-check" style="color:var(--amber-200);font-size:15px;" aria-hidden="true"></i>快速熟悉部门，熟悉当前工作</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <div style="font-size:12px;color:var(--amber-200);margin-bottom:8px;letter-spacing:0.06em;">下午</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.25);"><i class="ti ti-square-check" style="color:var(--amber-200);font-size:15px;" aria-hidden="true"></i>学习Protopie（怎么导入、实现原理、怎么做简单的动效→学习官网上和项目逻辑相似的案例）</div>
+        <div style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.25);"><i class="ti ti-square-check" style="color:var(--amber-200);font-size:15px;" aria-hidden="true"></i>确认Leapmotion能不能连接电脑</div>
+        <div style="display:flex;align-items:center;gap:8px;color:#c8c8c8;"><i class="ti ti-square" style="color:var(--text-muted);font-size:15px;" aria-hidden="true"></i>用2D的方式简单构思交互逻辑（未定）</div>
+        <div style="display:flex;align-items:center;gap:8px;color:var(--text-secondary);text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.25);"><i class="ti ti-square-check" style="color:var(--amber-200);font-size:15px;" aria-hidden="true"></i>硬件交互（Arduino connect）的实现方式的初步思考</div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg-card2);border-radius:var(--radius-md);padding:16px;">
+      <div style="font-size:13px;font-weight:500;color:var(--amber-200);margin-bottom:12px;">📌 当前工作梳理 · 项目1 现代汽车GUI——Protopie动效支撑</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">任务优先级</div>
+          <div style="font-size:13px;color:var(--text-primary);">P0：动效逻辑的实现</div>
+          <div style="font-size:13px;color:var(--text-secondary);">P1：硬件交互</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">项目背景</div>
+          <div style="font-size:13px;color:var(--text-secondary);">汽车用于展出场景的GUI界面设计，用于线下车展但不一定会投入生产，半落地</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">设计目标</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary);"><span style="color:var(--amber-400);margin-top:2px;">—</span>满足车展参观者的操作需求，展现现代新能源汽车的便捷与多元化</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary);"><span style="color:var(--amber-400);margin-top:2px;">—</span>保障安全方便操作的同时可以支配多种功能的应用从而提升家庭通勤过程的趣味性</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-bottom:32px;">
+    <h3><i class="ti ti-pencil" aria-hidden="true"></i> 为什么这份日志重要</h3>
+    <p>这份日志记录了我入职第一天就主动梳理任务优先级、拆解工作项、识别技术不确定性（Leapmotion 能否连接）的习惯。不等待分配，而是主动建立认知框架——这是我带进每段实习的工作方式。</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:16px;">每周周报结构</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-label">第一部分</div>
+      <div class="card-title">本周完成</div>
+      <div class="card-body">量化产出：完成了哪几个页面、访谈了几个用户、验证了哪条假设。不写"做了很多"，只写"做了什么"。</div>
+    </div>
+    <div class="card">
+      <div class="card-label">第二部分</div>
+      <div class="card-title">发现的问题</div>
+      <div class="card-body">主动暴露卡点和认知盲区，附带我的初步判断——是流程问题、资源问题还是能力问题。</div>
+    </div>
+    <div class="card">
+      <div class="card-label">第三部分</div>
+      <div class="card-title">我的解决方案</div>
+      <div class="card-body">不只提问题，同时给出至少一个我的思路，供导师选择或纠正方向。</div>
+    </div>
+    <div class="card">
+      <div class="card-label">第四部分</div>
+      <div class="card-title">下周计划</div>
+      <div class="card-body">明确下周优先级，主动争取资源（访谈名额、内部数据权限等），不被动等待分配。</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap" style="margin-top:8px;">
+    <div class="chart-title">实习期能力成长曲线预测（按月）</div>
+    <div style="position:relative;height:220px;">
+      <canvas id="growthChart" role="img" aria-label="实习期能力成长折线图，展示产品理解、用户洞察、原型交付三条曲线随时间提升">三条曲线分别代表：产品理解深度、用户洞察速度、原型交付效率。</canvas>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: 项目复盘 -->
+<div id="project" class="section">
+  <div class="section-title">汽车车机项目完整复盘</div>
+  <div class="section-sub">我参与的部分 + 如果重来/继续做，逻辑闭环是什么</div>
+
+  <div class="highlight-box">
+    <h3><i class="ti ti-info-circle" aria-hidden="true"></i> 先说清楚背景限制</h3>
+    <p>这是一个甲方项目，我入职时已到中后期。我未能参与用户研究和需求定义阶段，导致在作品集中无法展示完整的"问题→洞察→方案"链路。面试官的反馈是准确的。以下是我现在能重建的逻辑，以及如果从头参与会有哪些不同。</p>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:4px;">项目真正要解决的问题（我的推导）</div>
+  <div class="section-sub" style="margin-bottom:16px;">基于工作中接触的信息反向推导</div>
+
+  <div class="arrow-row">
+    <div class="arrow-box highlight">品牌机遇</div>
+    <div class="arrow-sep">→</div>
+    <div class="arrow-box">展厅用户决策焦虑</div>
+    <div class="arrow-sep">→</div>
+    <div class="arrow-box">车机体验认知差距</div>
+    <div class="arrow-sep">→</div>
+    <div class="arrow-box highlight">模拟体验系统</div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px;">
+    <div class="card card-amber">
+      <div class="card-label">核心用户痛点（推导）</div>
+      <div class="card-title">购车决策中的"黑盒体验"</div>
+      <div class="card-body">顾客在展厅无法真实体验车机系统——静态展车无法操作，销售讲解信息量有限。顾客缺乏"上手感"，导致购买决策犹豫，或购买后发现操作习惯与预期不符。</div>
+    </div>
+    <div class="card">
+      <div class="card-label">我做的解决方案</div>
+      <div class="card-title">展厅动态交互原型系统</div>
+      <div class="card-body">一套在展厅中模拟真实车机操作的完整动态 UI，覆盖主要使用场景：导航、音乐、空调调节、驾驶辅助参数设置。使用 ProtoPie 实现高保真交互。</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:16px;">项目时间线 + 我的参与位置</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 01 · 我未参与</div>
+      <div class="tl-title">用户研究 & 需求定义</div>
+      <div class="tl-body">甲方调研展厅顾客行为，定义核心体验痛点，制定产品策略。</div>
+      <span class="tl-missing">缺失：我无法还原原始用户洞察</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 02 · 我未参与</div>
+      <div class="tl-title">信息架构 & 交互框架</div>
+      <div class="tl-body">确定车机主要功能模块，设计导航逻辑与层级结构。</div>
+      <span class="tl-missing">缺失：不了解信息架构决策背后的依据</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 03 · 我入职 · 主要参与</div>
+      <div class="tl-title">动效设计 & 原型交付</div>
+      <div class="tl-body">基于已有视觉稿，使用 ProtoPie 实现完整动态交互原型，覆盖多个功能模块，对接前端和硬件测试团队进行验证。</div>
+      <span class="tl-added">完成：高保真动态原型 · 多轮硬件联调 · 最终展厅落地</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase 04 · 未完成部分</div>
+      <div class="tl-title">用户验证 & 迭代闭环</div>
+      <div class="tl-body">展厅上线后收集真实用户操作数据，识别操作卡点，提出迭代方向。</div>
+      <span class="tl-missing">未完成：缺少上线后的数据与复盘</span>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:16px;">如果重来，我会补上什么</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-icon"><i class="ti ti-user-search" aria-hidden="true"></i></div>
+      <div class="card-title">入职第一周：主动了解项目背景</div>
+      <div class="card-body">主动约谈 PM 和前期研究人员，梳理原始用户洞察文档，即使项目已到中期也要补齐背景认知，而不是直接上手执行。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="ti ti-clipboard-data" aria-hidden="true"></i></div>
+      <div class="card-title">原型设计阶段：建立决策文档</div>
+      <div class="card-body">每个交互决策记录"为什么这样设计"，对应哪个用户痛点，这样在作品集呈现时能完整还原逻辑链路，而不是只展示"做了什么"。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="ti ti-chart-dots" aria-hidden="true"></i></div>
+      <div class="card-title">上线后：主动跟进数据</div>
+      <div class="card-body">联系甲方或展厅工作人员，收集用户操作反馈（哪个模块用户最常卡住），为迭代方向提供数据依据，形成真正的闭环。</div>
+    </div>
+    <div class="card">
+      <div class="card-icon"><i class="ti ti-presentation" aria-hidden="true"></i></div>
+      <div class="card-title">作品集呈现：重构叙事结构</div>
+      <div class="card-body">现在的呈现方式从"我做了什么"出发，应改为"用户遇到什么问题 → 这个方案如何解决 → 我的贡献在哪"，即使中间有信息缺失也要明确说明而非回避。</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: 价值贡献 -->
+<div id="value" class="section">
+  <div class="section-title">我能为这个岗位带来什么</div>
+  <div class="section-sub">结合我的背景与 Insta360 固件 UX 岗位需求的具体匹配</div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">我的能力与岗位需求匹配度（自评）</div>
+    <div style="position:relative;height:280px;">
+      <canvas id="matchChart" role="img" aria-label="能力匹配雷达图，展示交互原型、硬件测试协作、动效设计、用户访谈、跨部门沟通、文档能力六个维度">六个维度：交互原型能力、硬件测试协作、动效设计、用户访谈（成长中）、跨部门沟通、文档整理能力。</canvas>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:16px;">三个我能直接上手的具体贡献</div>
+
+  <div class="card card-amber" style="margin-bottom:12px;">
+    <div style="display:flex;align-items:flex-start;gap:14px;">
+      <div style="font-size:22px;font-weight:500;color:var(--amber-200);min-width:28px;">01</div>
+      <div>
+        <div class="card-title">固件交互原型的快速还原与验证</div>
+        <div class="card-body">用 ProtoPie 将工程师的交互逻辑快速还原为可测试原型，让设计方案在代码开发前就能获得用户和 PM 的反馈，节省返工成本。我在汽车项目中已有完整动效原型独立交付经验。</div>
+        <div style="margin-top:8px;">
+          <span class="badge badge-amber">ProtoPie</span>
+          <span class="badge badge-amber">Figma</span>
+          <span class="badge badge-gray">已验证可交付</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;align-items:flex-start;gap:14px;">
+      <div style="font-size:22px;font-weight:500;color:var(--amber-200);min-width:28px;">02</div>
+      <div>
+        <div class="card-title">硬件联调中的体验问题识别</div>
+        <div class="card-body">我在上一段实习中对接甲方供应商做硬件测试，积累了"用设计师视角看硬件问题"的经验——识别哪些操作卡点是硬件限制，哪些是 UI 反馈设计不到位，并将问题结构化整理给工程师。这正是固件方向 UX 的日常工作之一。</div>
+        <div style="margin-top:8px;">
+          <span class="badge badge-amber">硬件测试协作</span>
+          <span class="badge badge-amber">问题定义</span>
+          <span class="badge badge-gray">跨专业沟通</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:24px;">
+    <div style="display:flex;align-items:flex-start;gap:14px;">
+      <div style="font-size:22px;font-weight:500;color:var(--amber-200);min-width:28px;">03</div>
+      <div>
+        <div class="card-title">社区用户痛点快速整理能力</div>
+        <div class="card-body">相机固件 UX 需要大量洞察用户痛点。我具备快速梳理 Reddit / B站 / 影石社区中用户反馈的能力，将非结构化的用户吐槽转化为可操作的体验问题列表，作为设计优化的输入。</div>
+        <div style="margin-top:8px;">
+          <span class="badge badge-amber">用户研究</span>
+          <span class="badge badge-amber">定性分析</span>
+          <span class="badge badge-gray">快速学习能力</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title" style="font-size:15px;margin-bottom:16px;">我的不足与补偿策略</div>
+  <ul class="value-list">
+    <li>
+      <i class="ti ti-alert-circle vi" aria-hidden="true"></i>
+      <div><strong style="color:var(--text-primary);font-weight:500;">缺少完整用户研究主导经验</strong><br>
+      <span style="color:var(--text-muted);">补偿：主动申请参与用户访谈的观察和记录工作，在前三周用大量时间补充对目标用户行为的理解，不等导师安排。</span></div>
+    </li>
+    <li>
+      <i class="ti ti-alert-circle vi" aria-hidden="true"></i>
+      <div><strong style="color:var(--text-primary);font-weight:500;">对相机固件内部逻辑了解有限</strong><br>
+      <span style="color:var(--text-muted);">补偿：入职前已开始系统整理 Insta360 产品线的固件更新日志和用户社区反馈，建立产品认知框架。</span></div>
+    </li>
+    <li>
+      <i class="ti ti-check vi" style="color:#5DCAA5;" aria-hidden="true"></i>
+      <div><strong style="color:var(--text-primary);font-weight:500;">作品集逻辑闭环呈现不足</strong><br>
+      <span style="color:var(--text-muted);">这一页就是我的回应——我理解了面试官反馈的问题所在，并且有能力重构叙事。这本身也是一种设计思维的体现。</span></div>
+    </li>
+  </ul>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+const amberColor = '#EF9F27';
+const amberLight = 'rgba(239,159,39,0.25)';
+const gridColor = 'rgba(255,255,255,0.07)';
+const tickColor = '#666360';
+
+Chart.defaults.color = tickColor;
+Chart.defaults.borderColor = gridColor;
+
+new Chart(document.getElementById('painChart'), {
+  type: 'radar',
+  data: {
+    labels: ['参数设置复杂度','错误提示不明确','固件升级体验','多设备同步问题','电量/存储反馈','新手引导缺失'],
+    datasets: [
+      { label: '用户感知频率', data: [85,70,60,75,65,80], borderColor: amberColor, backgroundColor: 'rgba(239,159,39,0.1)', borderWidth: 1.5, pointBackgroundColor: amberColor, pointRadius: 3, borderDash: [] },
+      { label: '我可介入深度', data: [90,85,50,65,75,88], borderColor: 'rgba(239,159,39,0.5)', backgroundColor: 'rgba(239,159,39,0.04)', borderWidth: 1.5, pointBackgroundColor: 'rgba(239,159,39,0.5)', pointRadius: 3, borderDash: [4,4] }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { r: { grid: { color: gridColor }, ticks: { display: false }, pointLabels: { color: tickColor, font: { size: 11 } }, suggestedMin: 0, suggestedMax: 100 } }
+  }
+});
+
+new Chart(document.getElementById('growthChart'), {
+  type: 'line',
+  data: {
+    labels: ['入职', '第1月', '第2月', '第3月', '第4月', '结束'],
+    datasets: [
+      { label: '产品理解深度', data: [30, 55, 72, 83, 90, 93], borderColor: amberColor, backgroundColor: 'transparent', tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: amberColor, borderDash: [] },
+      { label: '用户洞察速度', data: [20, 40, 62, 78, 87, 91], borderColor: '#5DCAA5', backgroundColor: 'transparent', tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#5DCAA5', borderDash: [4,4] },
+      { label: '原型交付效率', data: [65, 75, 82, 88, 93, 95], borderColor: '#7F77DD', backgroundColor: 'transparent', tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#7F77DD', borderDash: [2,2] }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 } } },
+      y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 11 }, callback: v => v + '%' }, min: 0, max: 100 }
+    }
+  }
+});
+
+new Chart(document.getElementById('matchChart'), {
+  type: 'radar',
+  data: {
+    labels: ['交互原型能力','硬件测试协作','动效设计','用户访谈（成长中）','跨部门沟通','文档整理能力'],
+    datasets: [
+      { label: '我的能力（自评）', data: [88, 75, 85, 55, 78, 82], borderColor: amberColor, backgroundColor: 'rgba(239,159,39,0.12)', borderWidth: 2, pointBackgroundColor: amberColor, pointRadius: 4, borderDash: [] },
+      { label: '岗位需求（估计）', data: [85, 70, 80, 80, 75, 75], borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.03)', borderWidth: 1, pointBackgroundColor: 'rgba(255,255,255,0.3)', pointRadius: 3, borderDash: [3,3] }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { r: { grid: { color: gridColor }, ticks: { display: false }, pointLabels: { color: tickColor, font: { size: 11 } }, suggestedMin: 0, suggestedMax: 100 } }
+  }
+});
+</script>
+</body>
+</html>
